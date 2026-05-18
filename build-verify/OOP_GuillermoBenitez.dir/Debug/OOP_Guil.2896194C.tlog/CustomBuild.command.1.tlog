@@ -1,0 +1,10 @@
+^C:\USERS\GUILLERMO\CLIONPROJECTS\OOP_GUILLERMOBENITEZ\CMAKELISTS.TXT
+setlocal
+C:\Users\Guillermo\scoop\apps\cmake\current\bin\cmake.exe -SC:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez -BC:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez/build-verify --check-stamp-file C:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez/build-verify/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

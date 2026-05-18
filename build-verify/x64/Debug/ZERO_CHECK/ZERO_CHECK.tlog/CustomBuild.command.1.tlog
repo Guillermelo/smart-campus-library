@@ -1,0 +1,10 @@
+^C:\USERS\GUILLERMO\CLIONPROJECTS\OOP_GUILLERMOBENITEZ\BUILD-VERIFY\CMAKEFILES\A72C33058C66B0ED026EE59022168B3D\GENERATE.STAMP.RULE
+setlocal
+C:\Users\Guillermo\scoop\apps\cmake\current\bin\cmake.exe -SC:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez -BC:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez/build-verify --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Guillermo/CLionProjects/OOP_GuillermoBenitez/build-verify/OOP_GuillermoBenitez.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
