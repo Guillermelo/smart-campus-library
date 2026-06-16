@@ -1,0 +1,10 @@
+build*/
+cmake-build-*/
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.tlog
+*.recipe
+*.user
+.idea/

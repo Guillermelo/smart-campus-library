@@ -41,11 +41,15 @@ bool Storage::load(std::vector<Book>& books, std::vector<Member>& members, std::
             continue;
         }
 
-        Book book(std::stoi(parts[0]), parts[1], parts[2], std::stoi(parts[3]), parts[4]);
-        if (parts[5] == "Borrowed") {
-            book.markBorrowed();
+        try {
+            Book book(std::stoi(parts[0]), parts[1], parts[2], std::stoi(parts[3]), parts[4]);
+            if (parts[5] == "Borrowed") {
+                book.markBorrowed();
+            }
+            books.push_back(book);
+        } catch (...) {
+            continue;
         }
-        books.push_back(book);
     }
 
     while (std::getline(memberFile, line)) {
@@ -53,7 +57,12 @@ bool Storage::load(std::vector<Book>& books, std::vector<Member>& members, std::
         if (parts.size() != 4) {
             continue;
         }
-        members.emplace_back(std::stoi(parts[0]), parts[1], parts[2], parts[3]);
+
+        try {
+            members.emplace_back(std::stoi(parts[0]), parts[1], parts[2], parts[3]);
+        } catch (...) {
+            continue;
+        }
     }
 
     while (std::getline(loanFile, line)) {
@@ -62,11 +71,15 @@ bool Storage::load(std::vector<Book>& books, std::vector<Member>& members, std::
             continue;
         }
 
-        Loan loan(std::stoi(parts[0]), std::stoi(parts[1]), std::stoi(parts[2]), parts[3], parts[4]);
-        if (parts[5] == "Returned") {
-            loan.markReturned(parts[6]);
+        try {
+            Loan loan(std::stoi(parts[0]), std::stoi(parts[1]), std::stoi(parts[2]), parts[3], parts[4]);
+            if (parts[5] == "Returned") {
+                loan.markReturned(parts[6]);
+            }
+            loans.push_back(loan);
+        } catch (...) {
+            continue;
         }
-        loans.push_back(loan);
     }
 
     return true;

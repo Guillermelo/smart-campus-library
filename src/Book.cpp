@@ -44,12 +44,3 @@ void Book::markAvailable() {
 std::string Book::statusText() const {
     return isAvailable() ? "Available" : "Borrowed";
 }
-
-std::ostream& operator<<(std::ostream& output, const Book& book) {
-    output << "[" << book.getId() << "] "
-           << book.getTitle()
-           << " by " << book.getAuthor()
-           << " (" << book.getYear() << ") - "
-           << book.statusText();
-    return output;
-}

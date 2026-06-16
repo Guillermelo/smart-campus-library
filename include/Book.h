@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ostream>
 #include <string>
 
 enum class BookStatus {
@@ -33,5 +32,3 @@ private:
     std::string category;
     BookStatus status = BookStatus::Available;
 };
-
-std::ostream& operator<<(std::ostream& output, const Book& book);

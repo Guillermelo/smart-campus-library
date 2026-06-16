@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 namespace {
 int readInt(const std::string& prompt) {
@@ -13,6 +14,11 @@ int readInt(const std::string& prompt) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return value;
         }
+
+        if (std::cin.eof()) {
+            return 0;
+        }
+
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Invalid number. Try again.\n";
@@ -25,6 +31,63 @@ std::string readLine(const std::string& prompt) {
     std::getline(std::cin, value);
     return value;
 }
+
+void clearScreen() {
+    std::cout << std::string(50, '\n');
+}
+
+void waitForEnter() {
+    std::cout << "\nPress Enter to continue...";
+    std::cin.get();
+}
+
+std::string chooseRole() {
+    const std::vector<std::string> roles = {"Student", "Faculty", "Staff"};
+
+    std::cout << "Role options\n";
+    for (std::size_t index = 0; index < roles.size(); ++index) {
+        std::cout << index + 1 << ". " << roles[index] << '\n';
+    }
+
+    while (true) {
+        const int option = readInt("Choose role: ");
+        if (option >= 1 && option <= static_cast<int>(roles.size())) {
+            return roles[option - 1];
+        }
+
+        std::cout << "Invalid role option. Try again.\n";
+    }
+}
+
+bool showAvailableBooksPreview(const Library& library) {
+    bool hasAvailableBooks = false;
+
+    std::cout << "\nAvailable books\n";
+    std::cout << std::left << std::setw(5) << "ID"
+              << std::setw(34) << "Title"
+              << std::setw(28) << "Author"
+              << std::setw(8) << "Year"
+              << "Category\n";
+
+    for (const auto& book : library.getBooks()) {
+        if (!book.isAvailable()) {
+            continue;
+        }
+
+        hasAvailableBooks = true;
+        std::cout << std::left << std::setw(5) << book.getId()
+                  << std::setw(34) << book.getTitle().substr(0, 32)
+                  << std::setw(28) << book.getAuthor().substr(0, 26)
+                  << std::setw(8) << book.getYear()
+                  << book.getCategory().substr(0, 22) << '\n';
+    }
+
+    if (!hasAvailableBooks) {
+        std::cout << "There are no available books to borrow.\n";
+    }
+
+    return hasAvailableBooks;
+}
 }
 
 Menu::Menu(Library& library, Storage& storage) : library(library), storage(storage) {}
@@ -32,25 +95,27 @@ Menu::Menu(Library& library, Storage& storage) : library(library), storage(stora
 void Menu::run() {
     bool running = true;
     while (running) {
+        clearScreen();
         showMainMenu();
         const int option = readInt("Choose an option: ");
 
         switch (option) {
-            case 1: listBooks(); break;
-            case 2: listMembers(); break;
-            case 3: addBook(); break;
-            case 4: addMember(); break;
-            case 5: borrowBook(); break;
-            case 6: returnBook(); break;
-            case 7: searchBooks(); break;
-            case 8: listActiveLoans(); break;
-            case 9: saveData(); break;
+            case 1: listBooks(); waitForEnter(); break;
+            case 2: listMembers(); waitForEnter(); break;
+            case 3: addBook(); waitForEnter(); break;
+            case 4: addMember(); waitForEnter(); break;
+            case 5: borrowBook(); waitForEnter(); break;
+            case 6: returnBook(); waitForEnter(); break;
+            case 7: searchBooks(); waitForEnter(); break;
+            case 8: listActiveLoans(); waitForEnter(); break;
+            case 9: saveData(); waitForEnter(); break;
             case 0:
                 saveData();
                 running = false;
                 break;
             default:
                 std::cout << "Unknown option.\n";
+                waitForEnter();
                 break;
         }
     }
@@ -140,12 +205,16 @@ void Menu::addBook() {
 void Menu::addMember() {
     const auto name = readLine("Name: ");
     const auto email = readLine("Email: ");
-    const auto role = readLine("Role: ");
+    const auto role = chooseRole();
 
     std::cout << (library.addMember(name, email, role) ? "Member added.\n" : "Member could not be added.\n");
 }
 
 void Menu::borrowBook() {
+    if (!showAvailableBooksPreview(library)) {
+        return;
+    }
+
     const int bookId = readInt("Book ID: ");
     const int memberId = readInt("Member ID: ");
 

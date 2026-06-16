@@ -49,11 +49,3 @@ void Loan::markReturned(std::string date) {
 std::string Loan::statusText() const {
     return isActive() ? "Active" : "Returned";
 }
-
-std::ostream& operator<<(std::ostream& output, const Loan& loan) {
-    output << "Loan #" << loan.getId()
-           << " | Book: " << loan.getBookId()
-           << " | Member: " << loan.getMemberId()
-           << " | Status: " << loan.statusText();
-    return output;
-}
