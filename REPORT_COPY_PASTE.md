@@ -5,11 +5,21 @@
 **Project Title:** Smart Campus Library System  
 **Programming Language:** C++20  
 
+## Abstract
+
+The Smart Campus Library System is a console-based C++20 application designed to manage a small university library. It allows the user to register books, register members, borrow books, return books, search the catalog, list active loans, and save data using CSV files. The project applies object-oriented programming through classes, encapsulation, abstraction, inheritance, polymorphism, composition, operator overloading, file handling, and exception handling. The system is designed with separate modules for user interaction, business logic, domain objects, and storage, making it easier to understand, maintain, and extend.
+
 ## 1. Problem Definition
 
 The problem addressed by this project is the manual management of a small university library. In many academic environments, books, members, and borrowing records may be tracked using paper forms or simple spreadsheets. This can cause several issues, such as duplicated records, difficulty checking book availability, lack of loan history, and mistakes when returning borrowed books.
 
 The objective of the Smart Campus Library System is to provide a simple console-based application that helps a librarian manage books, members, and loans in an organized way. The system allows the user to add books, add members, borrow books, return books, search the catalog, list active loans, and save data to files. The project focuses on applying object-oriented programming concepts in a practical and understandable C++ application.
+
+## Background Study
+
+Library management systems are common examples of information systems because they involve real-world entities, relationships, and rules. A book has bibliographic information and an availability status. A member has personal information and a role. A loan connects a member with a book for a specific period of time. These relationships make the problem suitable for object-oriented programming because each entity can be represented as a class with its own data and behavior.
+
+In this project, CSV file storage was selected because it is simple, readable, and appropriate for a small academic project. The system focuses on OOP design rather than database complexity. The same design could later be extended to use SQLite or another database while keeping most domain classes unchanged.
 
 ## 2. Project Objectives
 
@@ -56,9 +66,25 @@ Encapsulation is used by keeping class attributes private and exposing only cont
 
 Abstraction is applied by hiding implementation details behind simple methods. The menu does not need to know how a loan is created internally. It only calls the `borrowBook()` method from the `Library` class. This makes the program easier to use and easier to modify.
 
+### Inheritance
+
+Inheritance is used through the `Person` and `Member` classes. The `Person` class stores common personal information such as ID, name, and email. The `Member` class inherits from `Person` and adds a role, such as Student, Faculty, or Staff. This avoids duplicated code and models the relationship between a general person and a library member.
+
+### Polymorphism
+
+Polymorphism is used through the virtual `getDisplayLabel()` method in the `Person` class. The `Member` class overrides this method to display member information in its own format. This allows future person-related classes to define their own display behavior while sharing the same base interface.
+
 ### Composition
 
 Composition is used in the `Library` class. A library contains collections of books, members, and loans. This models the real-world relationship where a library owns and manages these records.
+
+### Operator Overloading
+
+The project includes overloaded `operator<<` functions for `Book`, `Member`, and `Loan`. This allows objects to be printed in a clean and readable way using standard output streams.
+
+### File Handling and Exception Handling
+
+File handling is used in the `Storage` class to load and save CSV files. Exception handling is used when reading numeric values from files, so invalid CSV records can be skipped without crashing the program.
 
 ## 5. Program Design
 
@@ -68,9 +94,13 @@ The project is divided into several classes, each with a clear responsibility.
 
 The `Book` class stores information about a book, including its ID, title, author, year, category, and availability status. It also provides methods to check whether the book is available and to update its status.
 
+### Person Class
+
+The `Person` class is a base class that stores common personal information, including ID, name, and email. It also defines a virtual method for creating a display label.
+
 ### Member Class
 
-The `Member` class represents a person who can borrow books from the library. It stores the member ID, name, email, and role, such as Student or Faculty.
+The `Member` class inherits from `Person`. It represents a person who can borrow books from the library and adds a role field, such as Student, Faculty, or Staff.
 
 ### Loan Class
 
@@ -102,18 +132,97 @@ README.md  Main project report and instructions
 
 This structure separates declarations from implementations and makes the project easier to navigate.
 
+### Class Diagram
+
+```text
+Person
+  - id
+  - name
+  - email
+  + getDisplayLabel()
+        ^
+        |
+Member
+  - role
+  + getDisplayLabel()
+
+Book
+  - id
+  - title
+  - author
+  - year
+  - category
+  - status
+
+Loan
+  - id
+  - bookId
+  - memberId
+  - borrowedDate
+  - dueDate
+  - returnedDate
+  - status
+
+Library
+  - books
+  - members
+  - loans
+  + addBook()
+  + addMember()
+  + borrowBook()
+  + returnBook()
+  + searchBooks()
+
+Menu --> Library
+Menu --> Storage
+Storage --> Book
+Storage --> Member
+Storage --> Loan
+Library contains Book, Member, and Loan objects.
+```
+
 ## 7. Algorithm Description
 
 The borrowing process works as follows:
 
 1. The user selects the borrow option from the menu.
-2. The system asks for the book ID and member ID.
-3. The `Library` class checks whether the book exists.
-4. The `Library` class checks whether the member exists.
-5. The system verifies that the book is currently available.
-6. If all conditions are valid, the book is marked as borrowed.
-7. A new loan record is created with the current date and a due date fourteen days later.
-8. The user receives a confirmation message.
+2. The system displays a preview of available books.
+3. The system asks for the book ID and member ID.
+4. The `Library` class checks whether the book exists.
+5. The `Library` class checks whether the member exists.
+6. The system verifies that the book is currently available.
+7. If all conditions are valid, the book is marked as borrowed.
+8. A new loan record is created with the current date and a due date fourteen days later.
+9. The user receives a confirmation message.
+
+Borrowing flowchart:
+
+```text
+Start
+  |
+Select Borrow Book
+  |
+Show available books
+  |
+Enter Book ID and Member ID
+  |
+Book exists? ---- no ----> Show error
+  |
+ yes
+  |
+Member exists? -- no ----> Show error
+  |
+ yes
+  |
+Book available? - no ----> Show error
+  |
+ yes
+  |
+Mark book borrowed
+Create loan record
+Show confirmation
+End
+```
 
 The return process works as follows:
 
@@ -200,9 +309,11 @@ The project avoids placing all logic inside the `main()` function. Instead, resp
 
 Basic error handling is included. For example, the program checks whether a book exists, whether a member exists, and whether a book is available before creating a loan.
 
+The source code is documented through clear names and separated responsibilities. Comments are not overused because most methods are short and self-explanatory.
+
 ## 10. Innovation and Complexity
 
-Although the project is a console application, it includes several features that make it more complete than a basic CRUD program. It includes persistent data storage, automatic demo data creation, active loan tracking, due date generation, keyword search, role selection, an available-book preview during borrowing, and a cleaner terminal workflow.
+Although the project is a console application, it includes several features that make it more complete than a basic CRUD program. It includes persistent data storage, automatic demo data creation, active loan tracking, due date generation, keyword search, role selection, an available-book preview during borrowing, a cleaner terminal workflow, inheritance, polymorphism, and operator overloading.
 
 The program was designed so it can be extended in the future. For example, the CSV storage layer could be replaced by a database without changing the main domain classes significantly.
 
@@ -258,9 +369,13 @@ Possible future improvements include:
 - Add a graphical user interface.
 - Generate automatic reports for active and returned loans.
 
+## Individual Contribution
+
+This project was completed individually by Guillermo Benitez. All major parts of the project, including class design, implementation, file handling, menu interaction, testing, documentation, and packaging, were completed as part of the individual OOP project.
+
 ## 14. Conclusion
 
-The Smart Campus Library System is a complete object-oriented C++ project that solves a practical library management problem. It demonstrates the use of classes, objects, encapsulation, abstraction, composition, and responsibility separation. The project is organized into multiple files and folders, making the code easier to understand and maintain.
+The Smart Campus Library System is a complete object-oriented C++ project that solves a practical library management problem. It demonstrates the use of classes, objects, encapsulation, abstraction, inheritance, polymorphism, composition, operator overloading, file handling, exception handling, and responsibility separation. The project is organized into multiple files and folders, making the code easier to understand and maintain.
 
 The application is functional because it allows users to manage books, members, and loans through a console menu. It also saves and loads data using CSV files, so information is preserved between executions. Overall, the project meets the requirements of an Object-Oriented Programming assignment and provides a solid base for future improvements.
 
@@ -270,4 +385,4 @@ My project is a Smart Campus Library System developed in C++20. It is a console 
 
 The most important class is `Library`, because it controls the main logic of the program. The `Book`, `Member`, and `Loan` classes represent the main real-world entities. The `Storage` class manages CSV file saving and loading, while the `Menu` class handles the console interface.
 
-This project uses object-oriented programming because data and behavior are grouped into classes. Encapsulation is used because class attributes are private. Abstraction is used because the menu calls simple methods such as `borrowBook()` without knowing the internal details. Composition is used because the `Library` class contains collections of books, members, and loans. The project is modular, functional, and easy to extend.
+This project uses object-oriented programming because data and behavior are grouped into classes. Encapsulation is used because class attributes are private. Abstraction is used because the menu calls simple methods such as `borrowBook()` without knowing the internal details. Inheritance is used because `Member` inherits from `Person`. Polymorphism is used because `Member` overrides the virtual `getDisplayLabel()` method. Operator overloading is used to print objects in a readable format. Composition is used because the `Library` class contains collections of books, members, and loans. The project is modular, functional, and easy to extend.

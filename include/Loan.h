@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iosfwd>
 #include <string>
 
 enum class LoanStatus {
@@ -33,3 +34,5 @@ private:
     std::string returnedDate;
     LoanStatus status = LoanStatus::Active;
 };
+
+std::ostream& operator<<(std::ostream& output, const Loan& loan);

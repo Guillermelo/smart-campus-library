@@ -1,5 +1,6 @@
 #include "Book.h"
 
+#include <ostream>
 #include <utility>
 
 Book::Book(int id, std::string title, std::string author, int year, std::string category)
@@ -43,4 +44,11 @@ void Book::markAvailable() {
 
 std::string Book::statusText() const {
     return isAvailable() ? "Available" : "Borrowed";
+}
+
+std::ostream& operator<<(std::ostream& output, const Book& book) {
+    output << book.getId() << " - " << book.getTitle()
+           << " by " << book.getAuthor()
+           << " (" << book.getYear() << ") - " << book.statusText();
+    return output;
 }

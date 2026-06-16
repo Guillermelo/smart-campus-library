@@ -1,5 +1,6 @@
 #include "Loan.h"
 
+#include <ostream>
 #include <utility>
 
 Loan::Loan(int id, int bookId, int memberId, std::string borrowedDate, std::string dueDate)
@@ -48,4 +49,12 @@ void Loan::markReturned(std::string date) {
 
 std::string Loan::statusText() const {
     return isActive() ? "Active" : "Returned";
+}
+
+std::ostream& operator<<(std::ostream& output, const Loan& loan) {
+    output << "Loan " << loan.getId()
+           << " | Book " << loan.getBookId()
+           << " | Member " << loan.getMemberId()
+           << " | " << loan.statusText();
+    return output;
 }

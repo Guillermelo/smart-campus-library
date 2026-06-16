@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(OOP_GuillermoBenitez
         src/main.cpp
         src/Book.cpp
+        src/Person.cpp
         src/Loan.cpp
         src/Member.cpp
         src/Library.cpp
